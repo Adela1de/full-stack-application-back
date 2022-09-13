@@ -1,6 +1,9 @@
 package luiz.augusto.fullstackapplication.services.impl;
 
 import luiz.augusto.fullstackapplication.entities.BasicUser;
+import luiz.augusto.fullstackapplication.entities.User;
+import luiz.augusto.fullstackapplication.exceptions.EmailAlreadyInUseException;
+import luiz.augusto.fullstackapplication.exceptions.ObjectNotFoundException;
 import luiz.augusto.fullstackapplication.repositories.UserRepository;
 import luiz.augusto.fullstackapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BasicUser registerBasicUser(String username, String email, String password) {
+
+        if(userRepository.findByEmail(email).isPresent())
+            throw new EmailAlreadyInUseException("Email Already in use");
+
         var user = new BasicUser(username, email);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
+
         return user;
+    }
+
+    private User findUserByEmailOrElseThrowException(String email)
+    {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new ObjectNotFoundException("User not found!")
+        );
     }
 }
