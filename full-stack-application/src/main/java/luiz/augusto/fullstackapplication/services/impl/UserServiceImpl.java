@@ -3,6 +3,7 @@ package luiz.augusto.fullstackapplication.services.impl;
 import luiz.augusto.fullstackapplication.entities.BasicUser;
 import luiz.augusto.fullstackapplication.entities.User;
 import luiz.augusto.fullstackapplication.exceptions.EmailAlreadyInUseException;
+import luiz.augusto.fullstackapplication.exceptions.IncorrectCredentialException;
 import luiz.augusto.fullstackapplication.exceptions.ObjectNotFoundException;
 import luiz.augusto.fullstackapplication.exceptions.UsernameAlreadyInUseException;
 import luiz.augusto.fullstackapplication.repositories.BasicUserRepository;
@@ -36,6 +37,24 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return user;
+    }
+
+    @Override
+    public BasicUser logInBasicUser(String username, String password)
+    {
+        var basicUser = findBasicUserByUsernameOrElseThrowException(username);
+
+        if(!passwordEncoder.matches(password, basicUser.getPassword()))
+            throw new IncorrectCredentialException("Wrong credentials ");
+
+        return basicUser;
+    }
+
+    private BasicUser findBasicUserByUsernameOrElseThrowException(String username)
+    {
+        return basicUserRepository.findByUsername(username).orElseThrow(
+                () -> new ObjectNotFoundException("User not found!")
+        );
     }
 
     private User findUserByEmailOrElseThrowException(String email)

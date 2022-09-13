@@ -12,7 +12,8 @@ public class WebSecurityConfig {
 
     private static final String[] WHITE_LIST_URLS = {
             "/test",
-            "/register"
+            "/register",
+            "/login"
     };
 
     @Bean

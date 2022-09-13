@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BasicUserRequestBody {
-
+public class BasicUserLoginRequestBody
+{
     private String username;
-    private String email;
     private String password;
-
 }

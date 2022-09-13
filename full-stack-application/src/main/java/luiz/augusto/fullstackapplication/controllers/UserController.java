@@ -2,7 +2,8 @@ package luiz.augusto.fullstackapplication.controllers;
 
 import luiz.augusto.fullstackapplication.dtos.BasicUserDTO;
 import luiz.augusto.fullstackapplication.mappers.UserMapper;
-import luiz.augusto.fullstackapplication.requests.BasicUserRequestBody;
+import luiz.augusto.fullstackapplication.requests.BasicUserLoginRequestBody;
+import luiz.augusto.fullstackapplication.requests.BasicUserRegisterRequestBody;
 import luiz.augusto.fullstackapplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,27 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BasicUserDTO> registerBasicUser(@RequestBody BasicUserRequestBody basicUserRequestBody)
+    public ResponseEntity<BasicUserDTO> registerBasicUser
+            (@RequestBody BasicUserRegisterRequestBody basicUserRegisterRequestBody)
     {
         var basicUser = userService.registerBasicUser(
-                basicUserRequestBody.getUsername(),
-                basicUserRequestBody.getEmail(),
-                basicUserRequestBody.getPassword()
+                basicUserRegisterRequestBody.getUsername(),
+                basicUserRegisterRequestBody.getEmail(),
+                basicUserRegisterRequestBody.getPassword()
         );
         var basicUserDTO = userMapper.toBasicUserDTO(basicUser);
         return ResponseEntity.ok().body(basicUserDTO);
     }
+
+    @PostMapping("login")
+    public ResponseEntity<BasicUserDTO> loginBasicUser(@RequestBody BasicUserLoginRequestBody basicUserLoginRequestBody)
+    {
+        var loggedUser = userService.logInBasicUser(
+                basicUserLoginRequestBody.getUsername(),
+                basicUserLoginRequestBody.getPassword()
+        );
+        var loggedUserDTO = userMapper.toBasicUserDTO(loggedUser);
+        return ResponseEntity.ok().body(loggedUserDTO);
+    }
 }
+
