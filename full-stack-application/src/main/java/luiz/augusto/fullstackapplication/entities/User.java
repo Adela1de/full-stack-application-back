@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Entity
 @Data
 @Table(name = "tb_user")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("userId")
 @NoArgsConstructor
 public class User implements Serializable {
 
@@ -16,20 +18,15 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long userId;
-    private String username;
+    @Column(name = "email_address")
     private String email;
     private String password;
     private String role;
     private boolean enabled = false;
 
-    public User(String email, String password) {
+    public User(String email, String password, String role) {
         this.email = email;
         this.password = password;
-    }
-
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+        this.role = role;
     }
 }
