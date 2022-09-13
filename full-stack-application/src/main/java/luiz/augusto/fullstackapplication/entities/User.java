@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
 @Entity
 @Data
 @Table(name = "tb_user")
@@ -18,15 +17,15 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long userId;
+    private String username;
     @Column(name = "email_address")
     private String email;
     private String password;
     private String role;
     private boolean enabled = false;
 
-    public User(String email, String password, String role) {
+    public User(String email, String role) {
         this.email = email;
-        this.password = password;
         this.role = role;
     }
 }

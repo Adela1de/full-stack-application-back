@@ -18,7 +18,7 @@ public class AdmUser extends User{
 
     private String username;
 
-    public AdmUser(String email, String password) {
-        super(email, password, "ADMIN");
+    public AdmUser(String email) {
+        super(email, "ADMIN");
     }
 }

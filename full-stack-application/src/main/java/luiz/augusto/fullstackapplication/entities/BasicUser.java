@@ -18,8 +18,8 @@ public class BasicUser extends User{
 
     private String username;
 
-    public BasicUser(String username, String email, String password) {
-        super(email, password, "USER");
+    public BasicUser(String username, String email) {
+        super(email, "USER");
         this.username = username;
     }
 }
