@@ -28,7 +28,6 @@ public class Article implements Serializable {
 
     public Article(String title, String text)
     {
-        if(this.user != null) this.author = user.getUsername();
         this.title = title;
         this.text = text;
     }
