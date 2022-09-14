@@ -5,8 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 public class BasicUser extends User{
 
     private String username;
+    @OneToMany(mappedBy = "user")
+    private List<Article> articles;
 
     public BasicUser(String username, String email) {
         super(email, "USER");
