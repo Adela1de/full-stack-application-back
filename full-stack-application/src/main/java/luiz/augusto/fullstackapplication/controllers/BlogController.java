@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/blog")
 @CrossOrigin("*")
@@ -22,7 +24,7 @@ public class BlogController {
     @PostMapping("/articles/new")
     public ResponseEntity<ArticleDTO> addNewArticle(
             @RequestParam("userId") Long userId,
-            @RequestBody NewArticleRequestBody newArticleRequestBody
+            @RequestBody @Valid NewArticleRequestBody newArticleRequestBody
     )
     {
         var article = blogService.addNewArticle(

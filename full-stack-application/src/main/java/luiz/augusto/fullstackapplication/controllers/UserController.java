@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin("*")
@@ -27,7 +29,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<BasicUserDTO> registerBasicUser
-            (@RequestBody BasicUserRegisterRequestBody basicUserRegisterRequestBody)
+            (@RequestBody @Valid BasicUserRegisterRequestBody basicUserRegisterRequestBody)
     {
         var basicUser = userService.registerBasicUser(
                 basicUserRegisterRequestBody.getUsername(),
@@ -39,7 +41,8 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<BasicUserDTO> loginBasicUser(@RequestBody BasicUserLoginRequestBody basicUserLoginRequestBody)
+    public ResponseEntity<BasicUserDTO> loginBasicUser
+            (@RequestBody @Valid BasicUserLoginRequestBody basicUserLoginRequestBody)
     {
         var loggedUser = userService.logInBasicUser(
                 basicUserLoginRequestBody.getUsername(),
