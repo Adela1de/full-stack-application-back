@@ -1,0 +1,73 @@
+package luiz.augusto.fullstackapplication.repositories;
+
+import luiz.augusto.fullstackapplication.entities.BasicUser;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+@DataJpaTest
+@DisplayName("Tests for User repository")
+class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private BasicUserRepository basicUserRepository;
+
+    @Test
+    @DisplayName("Save persists user when successful")
+    void save_PersistUser_WhenSuccessful()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        var savedBasicUser = userRepository.save(basicUser);
+
+        Assertions.assertThat(savedBasicUser).isNotNull();
+        Assertions.assertThat(savedBasicUser.getUserId()).isNotNull();
+        Assertions.assertThat(savedBasicUser.getUsername()).isEqualTo(basicUser.getUsername());
+        Assertions.assertThat(savedBasicUser.getEmail()).isEqualTo(basicUser.getEmail());
+        Assertions.assertThat(savedBasicUser.getPassword()).isEqualTo(basicUser.getPassword());
+    }
+
+    @Test
+    @DisplayName("Save finds user by email when successful")
+    void save_FindsByEmail_WhenSuccessful()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        var savedUser = userRepository.save(basicUser);
+
+        var foundUser = userRepository.findByEmail(savedUser.getEmail()).get();
+
+        Assertions.assertThat(foundUser).isNotNull();
+        Assertions.assertThat(foundUser.getUserId()).isNotNull();
+        Assertions.assertThat(foundUser.getEmail()).isEqualTo(savedUser.getEmail());
+        Assertions.assertThat(foundUser.getPassword()).isEqualTo(savedUser.getPassword());
+
+    }
+
+    @Test
+    @DisplayName("Save finds user by username when successful")
+    void save_FindsByUsername_WhenSuccessful()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        var savedBasicUser = userRepository.save(basicUser);
+
+        var basicUserFound = basicUserRepository.findByUsername(savedBasicUser.getUsername()).get();
+
+        Assertions.assertThat(basicUserFound).isNotNull();
+        Assertions.assertThat(basicUserFound.getUserId()).isNotNull();
+        Assertions.assertThat(basicUserFound.getUsername()).isEqualTo(savedBasicUser.getUsername());
+        Assertions.assertThat(basicUserFound.getEmail()).isEqualTo(savedBasicUser.getEmail());
+        Assertions.assertThat(basicUserFound.getPassword()).isEqualTo(savedBasicUser.getPassword());
+
+    }
+
+    private BasicUser createBasicUser()
+    {
+        return new BasicUser("TestUsername", "TestEmail");
+    }
+}
