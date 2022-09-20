@@ -50,7 +50,8 @@ public class BlogController {
         BasicUser basicUser;
 
         if(action.equalsIgnoreCase("like")) basicUser = blogService.likeArticle(userId, articleId);
-        else if(action.equalsIgnoreCase("favorite")) basicUser = blogService.favoriteArticle(userId, articleId);
+        else if(action.equalsIgnoreCase("favorite"))
+            basicUser = blogService.favoriteArticle(userId, articleId);
         else throw new IllegalActionException("Action not '"+ action +"' permitted");
 
         var basicUserDTO = userMapper.toBasicUserDTO(basicUser);

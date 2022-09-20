@@ -35,6 +35,12 @@ public class Article implements Serializable {
     @ManyToMany(mappedBy = "favoriteArticles")
     @JsonIgnore
     private List<BasicUser> favoriteBy = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "tb_tags_in_article",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
 
     public Article(String title, String text)
     {

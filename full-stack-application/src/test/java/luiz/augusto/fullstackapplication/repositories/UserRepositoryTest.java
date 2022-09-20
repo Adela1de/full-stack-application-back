@@ -1,5 +1,6 @@
 package luiz.augusto.fullstackapplication.repositories;
 
+import luiz.augusto.fullstackapplication.entities.Article;
 import luiz.augusto.fullstackapplication.entities.BasicUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,8 @@ class UserRepositoryTest {
     private UserRepository userRepository;
     @Autowired
     private BasicUserRepository basicUserRepository;
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Test
     @DisplayName("Save persists user when successful")
@@ -92,8 +95,46 @@ class UserRepositoryTest {
         Assertions.assertThat(user).isTrue();
     }
 
+    @Test
+    @DisplayName("add article to a list when successful")
+    void add_Article_toListOfArticlesLiked_WhenSuccessful()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        userRepository.save(basicUser);
+
+        var article = createArticle();
+
+        basicUser.getLikedArticles().add(article);
+        var savedBasicUser = userRepository.save(basicUser);
+
+        Assertions.assertThat(savedBasicUser.getLikedArticles()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("add article to a list when successful")
+    void add_Article_toListOfArticlesFavorite_WhenSuccessful()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        userRepository.save(basicUser);
+
+        var article = createArticle();
+
+        basicUser.getFavoriteArticles().add(article);
+        var savedBasicUser = userRepository.save(basicUser);
+
+        Assertions.assertThat(savedBasicUser.getFavoriteArticles()).isNotEmpty();
+    }
+
+
     private BasicUser createBasicUser()
     {
         return new BasicUser("TestUsername", "TestEmail");
+    }
+
+    private Article createArticle()
+    {
+        return new Article("Test title", "Test text");
     }
 }
