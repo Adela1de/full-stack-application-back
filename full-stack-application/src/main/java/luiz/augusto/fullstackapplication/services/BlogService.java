@@ -14,4 +14,6 @@ public interface BlogService {
     BasicUser favoriteArticle(Long userId, Long articleId);
 
     Article editExistingArticle(Long articleId, String title, String text, List<String> tags);
+
+    List<Article> getArticlesByTag(String tagName);
 }

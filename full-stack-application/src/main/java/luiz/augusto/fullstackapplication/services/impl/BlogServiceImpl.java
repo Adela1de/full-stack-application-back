@@ -93,6 +93,21 @@ public class BlogServiceImpl implements BlogService {
         return article;
     }
 
+    @Override
+    public List<Article> getArticlesByTag(String tagName)
+    {
+
+        var tag = findTagByNameOrElseThrowException(tagName);
+
+        return articleRepository.
+                findAll().
+                stream().
+                filter(
+                        x -> x.getTags().contains(tag)
+                ).
+                collect(Collectors.toList());
+    }
+
     private BasicUser findBasicUserByIdOrElseThrowException(Long basicUserId)
     {
         return basicUserRepository.findById(basicUserId).orElseThrow(

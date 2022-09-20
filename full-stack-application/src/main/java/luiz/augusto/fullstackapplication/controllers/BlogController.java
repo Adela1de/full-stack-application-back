@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/blog")
@@ -71,6 +73,14 @@ public class BlogController {
         var articleDTO = articleMapper.toArticleDTO(article);
 
         return ResponseEntity.ok().body(articleDTO);
+    }
+
+    @GetMapping("/articles/get")
+    public ResponseEntity<List<ArticleDTO>> getArticlesByTag(@RequestParam("tag") String tag)
+    {
+        var articles = blogService.getArticlesByTag(tag);
+        var articlesDTO = articles.stream().map(articleMapper::toArticleDTO).collect(Collectors.toList());
+        return ResponseEntity.ok().body(articlesDTO);
     }
 
 }
