@@ -59,4 +59,18 @@ public class BlogController {
         return ResponseEntity.ok().body(basicUserDTO);
     }
 
+    @PostMapping("/articles/edit")
+    public ResponseEntity<ArticleDTO> editArticle(@RequestParam("articleId") Long articleId,
+                                                  @RequestBody NewArticleRequestBody newArticleRequestBody)
+    {
+        var article = blogService.editExistingArticle(
+                articleId,
+                newArticleRequestBody.getTitle(),
+                newArticleRequestBody.getText(),
+                newArticleRequestBody.getTags());
+        var articleDTO = articleMapper.toArticleDTO(article);
+
+        return ResponseEntity.ok().body(articleDTO);
+    }
+
 }

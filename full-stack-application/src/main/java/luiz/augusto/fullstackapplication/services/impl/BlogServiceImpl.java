@@ -32,7 +32,7 @@ public class BlogServiceImpl implements BlogService {
         var basicUser = findBasicUserByIdOrElseThrowException(basicUserId);
         var article = new Article(title, text);
 
-        var listOfCreateTags =  createNonexistentTags(tags);
+        var listOfCreateTags =  createNonExistentTags(tags);
 
         article.setUser(basicUser);
         article.setAuthor(basicUser.getUsername());
@@ -41,7 +41,7 @@ public class BlogServiceImpl implements BlogService {
         return articleRepository.save(article);
     }
 
-    private List<Tag> createNonexistentTags(List<String> tags)
+    private List<Tag> createNonExistentTags(List<String> tags)
     {
         List<Tag> existingTags = new ArrayList<>();
 
@@ -78,6 +78,18 @@ public class BlogServiceImpl implements BlogService {
 
         basicUser.getFavoriteArticles().add(article);
         return basicUserRepository.save(basicUser);
+    }
+
+    @Override
+    public Article editExistingArticle(Long articleId, String title, String text, List<String> tags) {
+        var article = findArticleByIdOrElseThrowException(articleId);
+
+        article.setTitle(title);
+        article.setText(text);
+        article.setTags(createNonExistentTags(tags));
+
+        articleRepository.save(article);
+        return article;
     }
 
     private BasicUser findBasicUserByIdOrElseThrowException(Long basicUserId)
