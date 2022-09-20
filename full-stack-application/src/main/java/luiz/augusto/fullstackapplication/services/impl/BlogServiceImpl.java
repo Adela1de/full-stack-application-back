@@ -46,6 +46,7 @@ public class BlogServiceImpl implements BlogService {
         List<Tag> existingTags = new ArrayList<>();
 
         var nonExistentTags = tags.stream().filter(this::tagDoesNotExists).collect(Collectors.toList());
+        nonExistentTags = nonExistentTags.stream().distinct().collect(Collectors.toList());
         var existentTagsString = tags.stream().filter(
                 x -> !tagDoesNotExists(x)).collect(Collectors.toList()
         );
