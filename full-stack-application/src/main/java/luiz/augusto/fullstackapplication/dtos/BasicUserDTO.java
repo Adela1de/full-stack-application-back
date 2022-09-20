@@ -17,4 +17,5 @@ public class BasicUserDTO {
     private String role;
     private boolean enabled;
     private List<Article> likedArticles;
+    private List<Article> favoriteArticles;
 }

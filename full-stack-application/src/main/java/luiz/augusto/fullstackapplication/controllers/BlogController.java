@@ -2,6 +2,8 @@ package luiz.augusto.fullstackapplication.controllers;
 
 import luiz.augusto.fullstackapplication.dtos.ArticleDTO;
 import luiz.augusto.fullstackapplication.dtos.BasicUserDTO;
+import luiz.augusto.fullstackapplication.entities.BasicUser;
+import luiz.augusto.fullstackapplication.exceptions.IllegalActionException;
 import luiz.augusto.fullstackapplication.mappers.ArticleMapper;
 import luiz.augusto.fullstackapplication.mappers.UserMapper;
 import luiz.augusto.fullstackapplication.requests.NewArticleRequestBody;
@@ -40,11 +42,17 @@ public class BlogController {
         return ResponseEntity.ok().body(articleDTO);
     }
 
-    @PostMapping("/articles/like/{userId}/{articleId}")
-    public ResponseEntity<BasicUserDTO> likeArticle(@PathVariable("userId") Long userId,
-                                                    @PathVariable("articleId") Long articleId)
+    @PostMapping("/articles/{action}/{userId}/{articleId}")
+    public ResponseEntity<BasicUserDTO> likeOrFavoriteArticle(@PathVariable("userId") Long userId,
+                                                            @PathVariable("articleId") Long articleId,
+                                                            @PathVariable("action") String action)
     {
-        var basicUser = blogService.likeArticle(userId, articleId);
+        BasicUser basicUser;
+
+        if(action.equalsIgnoreCase("like")) basicUser = blogService.likeArticle(userId, articleId);
+        else if(action.equalsIgnoreCase("favorite")) basicUser = blogService.favoriteArticle(userId, articleId);
+        else throw new IllegalActionException("Action not '"+ action +"' permitted");
+
         var basicUserDTO = userMapper.toBasicUserDTO(basicUser);
         return ResponseEntity.ok().body(basicUserDTO);
     }

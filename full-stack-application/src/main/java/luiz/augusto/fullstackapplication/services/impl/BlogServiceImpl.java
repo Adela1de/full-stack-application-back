@@ -2,6 +2,7 @@ package luiz.augusto.fullstackapplication.services.impl;
 
 import luiz.augusto.fullstackapplication.entities.Article;
 import luiz.augusto.fullstackapplication.entities.BasicUser;
+import luiz.augusto.fullstackapplication.exceptions.IllegalActionException;
 import luiz.augusto.fullstackapplication.exceptions.ObjectNotFoundException;
 import luiz.augusto.fullstackapplication.repositories.ArticleRepository;
 import luiz.augusto.fullstackapplication.repositories.BasicUserRepository;
@@ -34,7 +35,21 @@ public class BlogServiceImpl implements BlogService {
         var basicUser = findBasicUserByIdOrElseThrowException(userId);
         var article = findArticleByIdOrElseThrowException(articleId);
 
+        validateLikeArticle(basicUser, article);
+
         basicUser.getLikedArticles().add(article);
+        return basicUserRepository.save(basicUser);
+    }
+
+    @Override
+    public BasicUser favoriteArticle(Long userId, Long articleId) {
+
+        var basicUser = findBasicUserByIdOrElseThrowException(userId);
+        var article = findArticleByIdOrElseThrowException(articleId);
+
+        validateFavoriteArticle(basicUser, article);
+
+        basicUser.getFavoriteArticles().add(article);
         return basicUserRepository.save(basicUser);
     }
 
@@ -50,5 +65,17 @@ public class BlogServiceImpl implements BlogService {
         return articleRepository.findById(articleId).orElseThrow(
                 () -> new ObjectNotFoundException("Article not found!")
         );
+    }
+
+    private void validateLikeArticle(BasicUser basicUser, Article article)
+    {
+        if(basicUser.getLikedArticles().contains(article))
+            throw new IllegalActionException("User already liked this article");
+    }
+
+    private void validateFavoriteArticle(BasicUser basicUser, Article article)
+    {
+        if(basicUser.getFavoriteArticles().contains(article))
+            throw new IllegalActionException("Article is already in users favorites");
     }
 }

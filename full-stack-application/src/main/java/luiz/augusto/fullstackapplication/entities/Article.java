@@ -27,10 +27,14 @@ public class Article implements Serializable {
             name = "userId",
             foreignKey = @ForeignKey(name = "FK_ARTICLE_USER")
     )
+    @JsonIgnore
     private BasicUser user;
     @ManyToMany(mappedBy = "likedArticles")
     @JsonIgnore
-    private List<BasicUser> users = new ArrayList<>();
+    private List<BasicUser> likedBy = new ArrayList<>();
+    @ManyToMany(mappedBy = "favoriteArticles")
+    @JsonIgnore
+    private List<BasicUser> favoriteBy = new ArrayList<>();
 
     public Article(String title, String text)
     {

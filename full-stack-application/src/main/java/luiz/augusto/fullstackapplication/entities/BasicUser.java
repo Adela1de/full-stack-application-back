@@ -25,6 +25,12 @@ public class BasicUser extends User{
             inverseJoinColumns = @JoinColumn(name = "article_id")
     )
     private List<Article> likedArticles = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "tb_articles_favorite_by_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "article_id")
+    )
+    private List<Article> favoriteArticles = new ArrayList<>();
 
     public BasicUser(String username, String email) {
         super(email, "USER");
