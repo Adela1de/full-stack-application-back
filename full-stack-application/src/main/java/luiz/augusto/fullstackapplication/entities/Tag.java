@@ -1,5 +1,6 @@
 package luiz.augusto.fullstackapplication.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,11 +17,12 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
-    private Long name;
+    private String name;
     @ManyToMany(mappedBy = "tags")
+    @JsonIgnore
     private List<Article> articles = new ArrayList<>();
 
-    public Tag(Long name) {
+    public Tag(String name) {
         this.name = name;
     }
 }

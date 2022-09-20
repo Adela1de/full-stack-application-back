@@ -2,13 +2,19 @@ package luiz.augusto.fullstackapplication.services.impl;
 
 import luiz.augusto.fullstackapplication.entities.Article;
 import luiz.augusto.fullstackapplication.entities.BasicUser;
+import luiz.augusto.fullstackapplication.entities.Tag;
 import luiz.augusto.fullstackapplication.exceptions.IllegalActionException;
 import luiz.augusto.fullstackapplication.exceptions.ObjectNotFoundException;
 import luiz.augusto.fullstackapplication.repositories.ArticleRepository;
 import luiz.augusto.fullstackapplication.repositories.BasicUserRepository;
+import luiz.augusto.fullstackapplication.repositories.TagRepository;
 import luiz.augusto.fullstackapplication.services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -17,16 +23,37 @@ public class BlogServiceImpl implements BlogService {
     private ArticleRepository articleRepository;
     @Autowired
     private BasicUserRepository basicUserRepository;
+    @Autowired
+    private TagRepository tagRepository;
 
     @Override
-    public Article addNewArticle(Long basicUserId, String title, String text) {
+    public Article addNewArticle(Long basicUserId, String title, String text, List<String> tags) {
 
         var basicUser = findBasicUserByIdOrElseThrowException(basicUserId);
         var article = new Article(title, text);
+
+        var listOfCreateTags =  createNonexistentTags(tags);
+
         article.setUser(basicUser);
         article.setAuthor(basicUser.getUsername());
+        article.setTags(listOfCreateTags);
 
         return articleRepository.save(article);
+    }
+
+    private List<Tag> createNonexistentTags(List<String> tags)
+    {
+        List<Tag> existingTags = new ArrayList<>();
+
+        var nonExistentTags = tags.stream().filter(this::tagDoesNotExists).collect(Collectors.toList());
+        var existentTagsString = tags.stream().filter(
+                x -> !tagDoesNotExists(x)).collect(Collectors.toList()
+        );
+
+        existentTagsString.forEach(x -> existingTags.add(findTagByNameOrElseThrowException(x)));
+        nonExistentTags.forEach(x -> existingTags.add(tagRepository.save(new Tag(x))));
+
+        return existingTags;
     }
 
     @Override
@@ -67,6 +94,16 @@ public class BlogServiceImpl implements BlogService {
         );
     }
 
+    private Tag findTagByIdOrElseThrowException(Long tagId)
+    {
+        return tagRepository.findById(tagId).orElseThrow(() -> new ObjectNotFoundException("Tag not found !"));
+    }
+
+    private Tag findTagByNameOrElseThrowException(String tagName)
+    {
+        return tagRepository.findByName(tagName).orElseThrow(() -> new ObjectNotFoundException("Tag not found !"));
+    }
+
     private void validateLikeArticle(BasicUser basicUser, Article article)
     {
         if(basicUser.getLikedArticles().contains(article))
@@ -77,5 +114,10 @@ public class BlogServiceImpl implements BlogService {
     {
         if(basicUser.getFavoriteArticles().contains(article))
             throw new IllegalActionException("Article is already in users favorites");
+    }
+
+    private boolean tagDoesNotExists(String tagName)
+    {
+        return !tagRepository.findByName(tagName).isPresent();
     }
 }

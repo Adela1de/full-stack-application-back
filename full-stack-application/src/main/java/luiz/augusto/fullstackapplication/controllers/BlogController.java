@@ -36,7 +36,8 @@ public class BlogController {
         var article = blogService.addNewArticle(
                 userId,
                 newArticleRequestBody.getTitle(),
-                newArticleRequestBody.getText()
+                newArticleRequestBody.getText(),
+                newArticleRequestBody.getTags()
         );
         var articleDTO = articleMapper.toArticleDTO(article);
         return ResponseEntity.ok().body(articleDTO);
