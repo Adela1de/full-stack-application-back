@@ -1,10 +1,13 @@
 package luiz.augusto.fullstackapplication.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,6 +28,9 @@ public class Article implements Serializable {
             foreignKey = @ForeignKey(name = "FK_ARTICLE_USER")
     )
     private BasicUser user;
+    @ManyToMany(mappedBy = "likedArticles")
+    @JsonIgnore
+    private List<BasicUser> users = new ArrayList<>();
 
     public Article(String title, String text)
     {

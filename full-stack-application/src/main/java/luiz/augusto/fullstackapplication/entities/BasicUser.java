@@ -4,10 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,6 +19,12 @@ public class BasicUser extends User{
     private String username;
     @OneToMany(mappedBy = "user")
     private List<Article> articles;
+    @ManyToMany
+    @JoinTable(name = "tb_articles_liked_by_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "article_id")
+    )
+    private List<Article> likedArticles = new ArrayList<>();
 
     public BasicUser(String username, String email) {
         super(email, "USER");

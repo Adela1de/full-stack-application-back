@@ -28,10 +28,27 @@ public class BlogServiceImpl implements BlogService {
         return articleRepository.save(article);
     }
 
+    @Override
+    public BasicUser likeArticle(Long userId, Long articleId) {
+
+        var basicUser = findBasicUserByIdOrElseThrowException(userId);
+        var article = findArticleByIdOrElseThrowException(articleId);
+
+        basicUser.getLikedArticles().add(article);
+        return basicUserRepository.save(basicUser);
+    }
+
     private BasicUser findBasicUserByIdOrElseThrowException(Long basicUserId)
     {
         return basicUserRepository.findById(basicUserId).orElseThrow(
                 () -> new ObjectNotFoundException("User not found!")
+        );
+    }
+
+    private Article findArticleByIdOrElseThrowException(Long articleId)
+    {
+        return articleRepository.findById(articleId).orElseThrow(
+                () -> new ObjectNotFoundException("Article not found!")
         );
     }
 }

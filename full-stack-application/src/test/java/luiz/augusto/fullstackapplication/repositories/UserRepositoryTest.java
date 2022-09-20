@@ -66,6 +66,32 @@ class UserRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("find basic user by username returns null when user is not found")
+    void findBasicUserByUserName_ReturnsNull_WhenUserIsNotFound()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        userRepository.save(basicUser);
+
+        var basicUserNotFound = basicUserRepository.findByUsername("Username").isEmpty();
+
+        Assertions.assertThat(basicUserNotFound).isTrue();
+    }
+
+    @Test
+    @DisplayName("find user by email returns null when user is not found")
+    void findUserByEmail_ReturnsNull_WhenUserIsNotFound()
+    {
+        var basicUser = createBasicUser();
+        basicUser.setPassword("00000000");
+        userRepository.save(basicUser);
+
+        var user = userRepository.findByEmail("Email").isEmpty();
+
+        Assertions.assertThat(user).isTrue();
+    }
+
     private BasicUser createBasicUser()
     {
         return new BasicUser("TestUsername", "TestEmail");
